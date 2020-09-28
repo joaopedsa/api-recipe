@@ -8,14 +8,14 @@ const checkAmountIngredientsAndReturn = (parameters) => {
 		throw new ParametersException('Excesso de Ingredientes na busca');
 	if (!parameters) throw new ParametersException('Sem ingredientes na busca');
 
-	return ingredients.sort(orderAlfabetic);
+	return setArrayInOrderAlfabetic(ingredients);
 };
 
 const formatResponse = async (recipes, keywords) => {
 	const newRecipes = recipes.map(async (recipe) => {
 		return {
 			title: recipe.title,
-			ingredients: getIngredientsInArray(recipe.ingredients),
+			ingredients: setIngredientsInArray(recipe.ingredients),
 			link: recipe.href,
 			gif: await RecipesService.getGiphy(recipe.title),
 		};
@@ -28,16 +28,23 @@ const formatResponse = async (recipes, keywords) => {
 	return response;
 };
 
-const getIngredientsInArray = (ingredients) => {
+const setIngredientsInArray = (ingredients) => {
 	const ingredientsArray = ingredients.split(',');
-	return ingredientsArray.sort(orderAlfabetic);
+	return setArrayInOrderAlfabetic(ingredientsArray);
 };
 
-const orderAlfabetic = (a, b) => {
-	return a.substring(0, 1) - b.substring(0, 1);
+const setArrayInOrderAlfabetic = (array) => {
+	return array.sort((a, b) => {
+		const aTrim = a.trim();
+		const bTrim = b.trim();
+		if (aTrim.substring(0, 1) > bTrim.substring(0, 1)) return 1;
+		if (aTrim.substring(0, 1) < bTrim.substring(0, 1)) return -1;
+		return 0;
+	});
 };
 
 module.exports = {
 	checkAmountIngredientsAndReturn,
 	formatResponse,
+	setIngredientsInArray,
 };
