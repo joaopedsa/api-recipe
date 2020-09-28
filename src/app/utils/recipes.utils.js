@@ -1,4 +1,5 @@
 const { ParametersException } = require('../exceptions/recipes.exceptions');
+const RecipesService = require('../services/recipes.service');
 
 const checkAmountIngredientsAndReturn = (parameters) => {
 	const ingredients = parameters.split(',');
@@ -11,9 +12,30 @@ const checkAmountIngredientsAndReturn = (parameters) => {
 	return ingredients.sort();
 };
 
-const formatRecipes = (recipes, keywords) => {};
+const formatResponse = async (recipes, keywords) => {
+	const newRecipes = recipes.map(async (recipe) => {
+		return {
+			title: recipe.title,
+			ingredients: getIngredientsInArray(recipe.ingredients),
+			link: recipe.href,
+			gif: await RecipesService.getGiphy(recipe.title),
+		};
+	});
+
+	const response = {
+		keywords,
+		recipes: await Promise.all(newRecipes),
+	};
+	return response;
+};
+
+const getIngredientsInArray = (ingredients) => {
+	const ingredientsArray = ingredients.split(',');
+	if (!ingredientsArray.length) return [ingredients];
+	return ingredientsArray.sort();
+};
 
 module.exports = {
 	checkAmountIngredientsAndReturn,
-	formatRecipes,
+	formatResponse,
 };

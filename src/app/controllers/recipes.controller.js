@@ -1,7 +1,8 @@
 const RecipesService = require('../services/recipes.service');
 const {
 	checkAmountIngredientsAndReturn,
-	formatRecipes,
+	formatResponse,
+	getGiphyToRecipes,
 } = require('../utils/recipes.utils');
 
 class RecipesController {
@@ -12,9 +13,10 @@ class RecipesController {
 		try {
 			const keywords = checkAmountIngredientsAndReturn(i);
 			const { data } = await RecipesService.getRecipes(i);
-			formatRecipes(data.results, keywords);
-			response.status(200).json(data);
+			const result = await formatResponse(data.results, keywords);
+			response.status(200).json(result);
 		} catch (err) {
+			console.log(err);
 			const { status, data } = err.response;
 			response.status(status).json(data);
 		}
