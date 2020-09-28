@@ -15,4 +15,4 @@ class RecipesController {
 	};
 }
 
-module.exports = new ExampleController();
+module.exports = new RecipesController();
