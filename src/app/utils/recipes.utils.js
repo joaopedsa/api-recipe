@@ -3,13 +3,12 @@ const RecipesService = require('../services/recipes.service');
 
 const checkAmountIngredientsAndReturn = (parameters) => {
 	const ingredients = parameters.split(',');
+
 	if (ingredients.length > 3)
 		throw new ParametersException('Excesso de Ingredientes na busca');
-	else if (!ingredients.length) {
-		if (parameters) return [parameters];
-		else throw new ParametersException('Sem ingredientes na busca');
-	}
-	return ingredients.sort();
+	if (!parameters) throw new ParametersException('Sem ingredientes na busca');
+
+	return ingredients.sort(orderAlfabetic);
 };
 
 const formatResponse = async (recipes, keywords) => {
@@ -31,8 +30,11 @@ const formatResponse = async (recipes, keywords) => {
 
 const getIngredientsInArray = (ingredients) => {
 	const ingredientsArray = ingredients.split(',');
-	if (!ingredientsArray.length) return [ingredients];
-	return ingredientsArray.sort();
+	return ingredientsArray.sort(orderAlfabetic);
+};
+
+const orderAlfabetic = (a, b) => {
+	return a.substring(0, 1) - b.substring(0, 1);
 };
 
 module.exports = {
