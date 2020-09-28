@@ -5,7 +5,7 @@ class RecipesService {
 
 	async getRecipes(parameters) {
 		const { apiRecipe } = ApiService;
-		const response = await apiRecipe.get(`/`);
+		const response = await apiRecipe.get(`/?i=${parameters}`);
 		return response;
 	}
 }
